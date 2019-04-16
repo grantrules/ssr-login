@@ -5,7 +5,7 @@ import graphqlHTTP from 'express-graphql';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router';
-import MyPage from './pages/MyPage';
+import Routes from './routes';
 
 import schema from './schema';
 
@@ -39,13 +39,13 @@ app.use(
   }),
 );
 
-app.get("/", (req, res) => {
+app.get("/*", (req, res) => {
 	        const context = {};
-	        res.write("<!DOCTYPE html><html><head><title>My Page</title></head><body>");
+	        res.write("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>My Page</title><link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css?family=Roboto:300,400,500\"></head><body>");
 	        res.write("<div id='content'>");
 	        res.write(ReactDOMServer.renderToString(
 			                <StaticRouter location={req.url} context={context}>
-			                        <MyPage/>
+			                        <Routes/>
 			                </StaticRouter>
 			        ));
 	        res.write("</div></body></html>");
