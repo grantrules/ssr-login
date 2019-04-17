@@ -6,6 +6,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import Routes from './routes';
+import html from './html';
 
 import schema from './schema';
 
@@ -41,15 +42,12 @@ app.use(
 
 app.get("/*", (req, res) => {
 	        const context = {};
-	        res.write("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>My Page</title><link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css?family=Roboto:300,400,500\"></head><body>");
-	        res.write("<div id='content'>");
-	        res.write(ReactDOMServer.renderToString(
+		res.write(html(ReactDOMServer.renderToString(
 			                <StaticRouter location={req.url} context={context}>
 			                        <Routes/>
 			                </StaticRouter>
-			        ));
-	        res.write("</div></body></html>");
-	        res.end();
+			        )));
+		res.end();
 });
 
 const port = 3000;

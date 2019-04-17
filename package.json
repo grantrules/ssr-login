@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx babel src -d build",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "dev:build": "npx babel -w src -d build &",
+    "dev:start": "npx nodemon build/index.js &"
   },
   "keywords": [],
   "author": "",
@@ -37,6 +39,7 @@
     "eslint-plugin-import": "^2.17.1",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
+    "nodemon": "^1.18.11",
     "sequelize-cli": "^5.4.0"
   }
 }
