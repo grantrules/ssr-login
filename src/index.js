@@ -40,14 +40,14 @@ app.use(
   }),
 );
 
-app.get("/*", (req, res) => {
+app.get('/*', (req, res) => {
 	        const context = {};
-		res.write(html(ReactDOMServer.renderToString(
-			                <StaticRouter location={req.url} context={context}>
-			                        <Routes/>
-			                </StaticRouter>
+  res.write(html(ReactDOMServer.renderToString(
+    <StaticRouter location={req.url} context={context}>
+      <Routes />
+    </StaticRouter>,
 			        )));
-		res.end();
+  res.end();
 });
 
 const port = 3000;
