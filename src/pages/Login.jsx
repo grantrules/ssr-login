@@ -27,9 +27,7 @@ export default () => (
     <br />
 
     <Button variant="contained" color="secondary" type="submit">
-	            Log In
-
-      {' '}
+Log In
     </Button>
   </form>
 );

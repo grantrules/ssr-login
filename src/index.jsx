@@ -4,8 +4,7 @@ import session from 'express-session';
 import graphqlHTTP from 'express-graphql';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { StaticRouter } from 'react-router';
-import Routes from './routes';
+import ServerApp from './ServerApp';
 import html from './html';
 
 import schema from './schema';
@@ -41,12 +40,10 @@ app.use(
 );
 
 app.get('/*', (req, res) => {
-	        const context = {};
+  const context = {};
   res.write(html(ReactDOMServer.renderToString(
-    <StaticRouter location={req.url} context={context}>
-      <Routes />
-    </StaticRouter>,
-			        )));
+    <ServerApp req={req} context={context} />,
+  )));
   res.end();
 });
 
