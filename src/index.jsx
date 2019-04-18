@@ -48,6 +48,12 @@ app.use(
   }),
 );
 
+
+app.use(
+  '/static',
+  express.static('dist'),
+);
+
 app.get('/*', (req, res) => {
   const sheetsRegistry = new SheetsRegistry();
 
