@@ -4,6 +4,15 @@ import session from 'express-session';
 import graphqlHTTP from 'express-graphql';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
+import { SheetsRegistry } from 'jss';
+import JssProvider from 'react-jss/lib/JssProvider';
+import {
+  MuiThemeProvider,
+  createMuiTheme,
+  createGenerateClassName,
+} from '@material-ui/core/styles';
+import green from '@material-ui/core/colors/green';
+import red from '@material-ui/core/colors/red';
 import ServerApp from './ServerApp';
 import html from './html';
 
@@ -40,10 +49,37 @@ app.use(
 );
 
 app.get('/*', (req, res) => {
+  const sheetsRegistry = new SheetsRegistry();
+
+  // Create a sheetsManager instance.
+  const sheetsManager = new Map();
+
+  // Create a theme instance.
+  const theme = createMuiTheme({
+    palette: {
+      primary: green,
+      accent: red,
+      type: 'light',
+    },
+	  typography: {
+		  useNextVariants: true,
+	  },
+  });
+
+  const generateClassName = createGenerateClassName();
+
+
   const context = {};
-  res.write(html(ReactDOMServer.renderToString(
-    <ServerApp req={req} context={context} />,
-  )));
+  const r = ReactDOMServer.renderToString(
+    <JssProvider registry={sheetsRegistry} generateClassName={generateClassName}>
+      <MuiThemeProvider theme={theme} sheetsManager={sheetsManager}>
+        <ServerApp req={req} context={context} />
+      </MuiThemeProvider>
+    </JssProvider>
+    ,
+  );
+  const css = sheetsRegistry.toString();
+  res.write(html(r, css));
   res.end();
 });
 
