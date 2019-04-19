@@ -3,6 +3,10 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import classNames from 'classnames';
 import { makeStyles } from '@material-ui/styles';
+import { useQuery } from 'graphql-hooks';
+
+const LOGIN_QUERY = `query { login { email: $email, password: $password } }`
+
 
 const useStyles = makeStyles(theme => ({
 	  container: {
@@ -26,8 +30,13 @@ function Login() {
   const handleChange = name => (event) => { setValues({ ...values, [name]: event.target.value }); };
 
 
+  const submitForm = () => {
+	  const { loading, error, data } = useQuery(LOGIN_QUERY, { variables: { email: values.email, password: values.password } });
+
+	  alert(data);
+  };
   return (
-    <form onSubmit={() => {}}>
+    <form onSubmit={submitForm}>
 
       <TextField
         autoFocus
