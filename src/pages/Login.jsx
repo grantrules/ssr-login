@@ -3,9 +3,9 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import classNames from 'classnames';
 import { makeStyles } from '@material-ui/styles';
-import { useQuery } from 'graphql-hooks';
+import { useManualQuery } from 'graphql-hooks';
 
-const LOGIN_QUERY = `query { login { email: $email, password: $password } }`
+const LOGIN_QUERY = 'query Login($email: String, $password: String) { login(email:$email, password:$password) }';
 
 
 const useStyles = makeStyles(theme => ({
@@ -27,13 +27,21 @@ function Login() {
   const classes = useStyles();
   const [values, setValues] = React.useState({ email: '', password: '' });
 
+  const [login] = useManualQuery(LOGIN_QUERY);
+
   const handleChange = name => (event) => { setValues({ ...values, [name]: event.target.value }); };
 
 
-  const submitForm = () => {
-	  const { loading, error, data } = useQuery(LOGIN_QUERY, { variables: { email: values.email, password: values.password } });
+  const submitForm = async (event) => {
+    event.preventDefault();
+    const data = await login({
+      variables: {
+        email: values.email,
+        password: values.password,
+      },
+    });
 
-	  alert(data);
+    // alert(data);
   };
   return (
     <form onSubmit={submitForm}>
@@ -47,19 +55,21 @@ function Login() {
         label="Email Address"
         placeholder="Email Address"
         margin="normal"
-        InputLabelProps={{shrink: true,}}
+        InputLabelProps={{ shrink: true }}
         required
       />
       <br />
 
       <TextField
+        value={values.password}
+        onChange={handleChange('password')}
         id="standard-password-input"
         label="Password"
         type="password"
         autoComplete="current-password"
         margin="normal"
-        InputLabelProps={{ shrink: true, }}
-	required
+        InputLabelProps={{ shrink: true }}
+        required
       />
       <br />
 
@@ -69,9 +79,5 @@ Log In
     </form>
   );
 }
-/*
-Login.propTypes = {
-	  classes: PropTypes.object.isRequired,
-};
-*/
+
 export default Login;

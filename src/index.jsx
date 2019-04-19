@@ -13,6 +13,12 @@ import {
 } from '@material-ui/core/styles';
 import green from '@material-ui/core/colors/green';
 import red from '@material-ui/core/colors/red';
+
+import graphql from 'graphql';
+import { GraphQLClient, ClientContext } from 'graphql-hooks';
+import memCache from 'graphql-hooks-memcache';
+import { getInitialState } from 'graphql-hooks-ssr';
+
 import ServerApp from './ServerApp';
 import html from './html';
 
@@ -36,6 +42,12 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
+const notFetch = (_, { body }) => {
+  const result = { ok: true, json: () => Promise.resolve(this.data).then(JSON.parse), data: {} };
+
+  graphql(schema, body).then((res) => { result.data = res; return result; });
+};
+
 
 const app = express();
 app.use(session({ secret: 'keyboard cat' }));
@@ -54,7 +66,7 @@ app.use(
   express.static('dist'),
 );
 
-app.get('/*', (req, res) => {
+app.get('/*', async (req, res) => {
   const sheetsRegistry = new SheetsRegistry();
 
   // Create a sheetsManager instance.
@@ -67,25 +79,35 @@ app.get('/*', (req, res) => {
       accent: red,
       type: 'light',
     },
-	  typography: {
-		  useNextVariants: true,
-	  },
+    typography: {
+      useNextVariants: true,
+    },
   });
 
   const generateClassName = createGenerateClassName();
-
+  const client = new GraphQLClient({
+    url: '/hey',
+    cache: memCache(),
+    fetch: notFetch,
+  });
 
   const context = {};
-  const r = ReactDOMServer.renderToString(
-    <JssProvider registry={sheetsRegistry} generateClassName={generateClassName}>
-      <MuiThemeProvider theme={theme} sheetsManager={sheetsManager}>
-        <ServerApp req={req} context={context} />
-      </MuiThemeProvider>
-    </JssProvider>
-    ,
+
+  const App = () => (
+    <ClientContext.Provider value={client}>
+      <JssProvider registry={sheetsRegistry} generateClassName={generateClassName}>
+        <MuiThemeProvider theme={theme} sheetsManager={sheetsManager}>
+          <ServerApp req={req} context={context} />
+        </MuiThemeProvider>
+      </JssProvider>
+    </ClientContext.Provider>
   );
+
+  const initialState = await getInitialState({ App, client });
+
+  const r = ReactDOMServer.renderToString(<App />);
   const css = sheetsRegistry.toString();
-  res.write(html(r, css));
+  res.write(html(r, css, initialState));
   res.end();
 });
 
