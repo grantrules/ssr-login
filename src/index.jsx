@@ -70,13 +70,13 @@ app.get('/*', async (req, res) => {
   });
   const sheetsRegistry = new SheetsRegistry();
 
-  const App = () => (
+  const App = (
     <ServerApp client={client} req={req} sheetsRegistry={sheetsRegistry} />
   );
 
   const initialState = await getInitialState({ App, client });
 
-  const r = ReactDOMServer.renderToString(<App />);
+  const r = ReactDOMServer.renderToString(App);
   const css = sheetsRegistry.toString();
   res.write(html(r, css, initialState));
   res.end();
