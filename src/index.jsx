@@ -45,12 +45,16 @@ sequelize
 const notFetch = (_, { body }) => {
   const result = { ok: true, json: () => Promise.resolve(this.data).then(JSON.parse), data: {} };
 
-  graphql(schema, body).then((res) => { result.data = res; return result; });
+  return graphql(schema, body).then((res) => { result.data = res; return result; });
 };
 
 
 const app = express();
-app.use(session({ secret: 'keyboard cat' }));
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+}));
 
 app.use(
   '/graphql',
