@@ -1,10 +1,10 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import Login from './pages/Login';
-import Index from './pages/Index';
-import Private from './pages/Private';
-import Register from './pages/Register';
+import Login from '../pages/Login';
+import Index from '../pages/Index';
+import Private from '../pages/Private';
+import Register from '../pages/Register';
 
 export default () => (
   <Switch>

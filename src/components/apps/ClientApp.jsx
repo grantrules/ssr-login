@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { GraphQLClient, ClientContext } from 'graphql-hooks';
-import Routes from './routes';
+import Routes from '../Routes';
 
 const client = new GraphQLClient({
   url: '/graphql',

@@ -1,19 +1,16 @@
 import Sequelize from 'sequelize';
 import express from 'express';
 import session from 'express-session';
-import graphqlHTTP from 'express-graphql';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { SheetsRegistry } from 'jss';
 import memCache from 'graphql-hooks-memcache';
-import { graphql } from 'graphql';
-import { GraphQLClient } from 'graphql-hooks';
 import { getInitialState } from 'graphql-hooks-ssr';
 
-import ServerApp from './ServerApp';
+import ServerApp from './components/apps/ServerApp';
 import html from './html';
-
-import schema from './schema';
+import createClient from './middleware/graphql/createClient';
+import createServer from './middleware/graphql/createServer';
 
 import modelsInit from './models/init';
 
@@ -33,14 +30,6 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
-const notFetch = (_, { body }) => {
-  const { query } = JSON.parse(body);
-  const result = { ok: true, json() { return Promise.resolve(this.data); }, data: {} };
-
-  return graphql(schema, query).then((res) => { result.data = res; return result; });
-};
-
-
 const app = express();
 app.use(session({
   secret: 'keyboard cat',
@@ -50,10 +39,7 @@ app.use(session({
 
 app.use(
   '/graphql',
-  graphqlHTTP({
-    schema,
-    graphiql: true,
-  }),
+  createServer(),
 );
 
 
@@ -63,10 +49,10 @@ app.use(
 );
 
 app.get('/*', async (req, res) => {
-  const client = new GraphQLClient({
+  const client = createClient({
+    ssrMode: true,
     url: '/hey',
     cache: memCache(),
-    fetch: notFetch,
   });
   const sheetsRegistry = new SheetsRegistry();
 

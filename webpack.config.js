@@ -2,7 +2,7 @@ const path = require('path');
 const WebpackManifestPlugin = require('webpack-manifest-plugin');
 
 module.exports = {
-  entry: './build/ClientApp.js',
+  entry: './build/components/apps/ClientApp.js',
   output: {
     publicPath: '/static/',
     path: path.resolve(__dirname, 'dist'),

@@ -12,7 +12,7 @@ import {
 import green from '@material-ui/core/colors/green';
 import red from '@material-ui/core/colors/red';
 import JssProvider from 'react-jss/lib/JssProvider';
-import Routes from './routes';
+import Routes from '../Routes';
 
 
 // Create a sheetsManager instance.
