@@ -1,10 +1,8 @@
-import Sequelize from 'sequelize';
 import express from 'express';
 import session from 'express-session';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { SheetsRegistry } from 'jss';
-import memCache from 'graphql-hooks-memcache';
 import { getInitialState } from 'graphql-hooks-ssr';
 
 import ServerApp from './components/apps/ServerApp';
@@ -12,23 +10,8 @@ import html from './html';
 import createClient from './middleware/graphql/createClient';
 import createServer from './middleware/graphql/createServer';
 
-import modelsInit from './models/init';
-
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: 'database.sqlite',
-});
-
-sequelize
-  .authenticate()
-  .then(() => {
-    modelsInit(sequelize);
-
-    console.log('Connection has been established successfully.');
-  })
-  .catch((err) => {
-    console.error('Unable to connect to the database:', err);
-  });
+// eslint-disable-next-line no-unused-vars
+import connect from './middleware/db/connect';
 
 const app = express();
 app.use(session({
@@ -49,11 +32,7 @@ app.use(
 );
 
 app.get('/*', async (req, res) => {
-  const client = createClient({
-    ssrMode: true,
-    url: '/hey',
-    cache: memCache(),
-  });
+  const client = createClient();
   const sheetsRegistry = new SheetsRegistry();
 
   const App = (

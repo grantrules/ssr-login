@@ -8,6 +8,11 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'client.[hash].js',
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
   plugins: [
     new WebpackManifestPlugin({
       fileName: '../build/manifest.json',
