@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core/styles';
 import green from '@material-ui/core/colors/green';
 import red from '@material-ui/core/colors/red';
-import JssProvider from 'react-jss/lib/JssProvider';
+import {JssProvider} from 'react-jss';
 import Routes from '../Routes';
 
 
