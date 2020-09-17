@@ -40,7 +40,7 @@ function Register() {
 		<TextField
 		        autoFocus
 		        fullWidth
-		        value={values.passwordcompare}
+		        value={values.passwordconfirm}
 		        onChange={handleChange('passwordconfirm')}
 		        id="passwordconfirm"
 		        label="Confirm Password"
